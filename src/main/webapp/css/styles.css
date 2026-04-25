@@ -1,0 +1,342 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+:root {
+    /* 60 / 30 / 10 */
+    --bg: #fdf7fa;
+    --surface: #ffffff;
+
+    --primary: #e06c9f;   /* основной розовый */
+    --accent: #f4aac7;    /* более тёмный розовый */
+
+    --text: #2f2f2f;
+
+    /* границы */
+    --border: #f1dbe6;        /* внутренние линии (светлые) */
+    --border-dark: #f4aac7;   /* ТЁМНАЯ рамка таблицы */
+
+    /* дополнительные */
+    --subtext: #a07a8f;
+    --header-bg: #fff5f9;
+    --hover: #fff0f6;
+    --error-bg: #fff0f5;
+}
+
+/* BASE */
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* HEADER */
+/* HEADER */
+.header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px; /* расстояние между .titles и .auth */
+}
+
+.header .titles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* расстояние между h1 и h2 */
+}
+
+.header .titles h1 {
+    margin: 0;
+    font-size: 26px;
+    color: var(--primary);
+}
+
+.header .titles h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--subtext);
+}
+
+/* .auth теперь колонкой */
+.header .auth {
+    display: flex;
+    flex-direction: column; /* кнопка сверху, имя снизу */
+    align-items: flex-end;    /* центрируем содержимое */
+    gap: 6px;               /* расстояние между кнопкой и именем */
+}
+
+.header .auth button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.header .auth button:hover {
+    background-color: #a3154d;
+}
+
+
+/* КОНТЕНТ */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ЗАГОЛОВКИ */
+.section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+/* ТАБЛИЦА */
+table {
+    width: 100%;
+    border-collapse: separate; /* важно! */
+    border-spacing: 0;
+
+
+    background-color: var(--surface);
+    border: 2px solid var(--border-dark); /* ТЁМНАЯ рамка */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--border-dark);
+    text-align: left;
+}
+
+th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    background-color: var(--header-bg);
+    color: var(--primary);
+
+}
+
+td {
+    border-bottom: 1px solid var(--border);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: var(--hover);
+}
+
+/* КНОПКИ */
+button {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+button:hover {
+    background-color: #a3154d;
+}
+
+/* ССЫЛКИ */
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* БЛОКИ */
+.actions {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    gap: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    background-color: var(--surface);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--primary);
+}
+
+.login-container form div {
+    margin-bottom: 15px;
+}
+
+.login-container label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 6px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background-color: #a3154d;
+}
+
+
+/* СООБЩЕНИЯ */
+.message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+/* ФОРМА АДМИНИСТРАТОРА — вертикальная, все компоненты под друг другом */
+.admin-form {
+    display: flex;
+    flex-direction: column; /* все элементы сверху вниз */
+    gap: 16px; /* вертикальный gap между элементами */
+    background-color: var(--surface);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--border-dark);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+/* Обертка для каждого элемента формы */
+.admin-form .form-item {
+    display: flex;
+    flex-direction: column; /* label сверху, input снизу */
+    gap: 6px; /* расстояние между label и input */
+    width: 100%; /* поля занимают всю ширину */
+}
+
+/* Метки */
+.admin-form label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* Инпуты */
+.admin-form input[type="text"],
+.admin-form input[type="number"] {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    width: 100%; /* тянем на всю ширину .form-item */
+    box-sizing: border-box;
+}
+
+/* Чекбоксы — вертикально с текстом */
+.admin-form .checkbox-wrapper {
+    display: flex;
+    flex-direction: column; /* текст под чекбоксом или рядом, можно column */
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Скрытый стандартный чекбокс */
+.admin-form input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-dark);
+    border-radius: 4px;
+    background-color: var(--surface);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.admin-form input[type="checkbox"]:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.admin-form input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 4px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column; /* текст под чекбоксом или рядом, можно column */
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+/* Кнопка отправки */
+.admin-form button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    align-self: flex-start; /* можно flex-end для правого края */
+}
+
+.admin-form button:hover {
+    background-color: #a3154d;
+}
