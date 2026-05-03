@@ -16,7 +16,7 @@
 <div class="login-container">
     <h2>Вход в систему</h2>
 
-    <form method="post" action="${pageContext.request.contextPath}/login">
+    <form method="post" action="${pageContext.request.contextPath}/app?command=login">
         <div>
             <label>Логин:</label>
             <input type="text" name="username" required>

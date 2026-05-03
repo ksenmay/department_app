@@ -19,7 +19,7 @@
         </div>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/add-user" method="post" class="admin-form">
+    <form action="${pageContext.request.contextPath}/app?command=addUser" method="post" class="admin-form">
 
         <div class="form-item">
             <label>Логин</label>
@@ -71,7 +71,7 @@
     </form>
 
     <div class="actions">
-        <a href="${pageContext.request.contextPath}/disciplines">Назад</a>
+        <a href="${pageContext.request.contextPath}/app?command=showDisciplines">Назад</a>
     </div>
 
 </div>

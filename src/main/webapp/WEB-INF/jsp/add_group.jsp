@@ -13,7 +13,7 @@
         <h2>Добавление группы</h2>
     </div>
     <div class="auth">
-        <form action="${pageContext.request.contextPath}/logout" method="post">
+        <form action="${pageContext.request.contextPath}//app?command=logout" method="post">
             <button type="submit">Выйти</button>
         </form>
         Пользователь:
@@ -41,7 +41,7 @@
     </c:if>
 
     <!-- Форма добавления группы -->
-    <form action="${pageContext.request.contextPath}/add-group" method="post" class="admin-form">
+    <form action="${pageContext.request.contextPath}//app?command=addGroup" method="post" class="admin-form">
         <div class="form-item">
             <label for="groupNumber">Номер группы:</label>
             <input type="number" name="groupNumber" id="groupNumber" required min="1" placeholder="Введите номер группы">
@@ -56,7 +56,7 @@
     </form>
 
     <div class="actions">
-        <a href="${pageContext.request.contextPath}/disciplines">Вернуться к кафедре</a>
+        <a href="${pageContext.request.contextPath}//app?command=showDisciplines">Вернуться к кафедре</a>
     </div>
 
 </div>

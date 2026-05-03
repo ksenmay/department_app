@@ -1,4 +1,4 @@
-package by.may.department.servlet;
+package by.may.department.command;
 
 import by.may.department.factory.ServiceFactory;
 import by.may.department.model.Group;
@@ -14,24 +14,26 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-public class AddUserServlet extends HttpServlet {
+public class AddUserCommand implements Command {
 
     private final UserService userService = ServiceFactory.getInstance().getUserService();
     private final GroupService groupService = ServiceFactory.getInstance().getGroupService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void execute(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-        List<Group> groups = groupService.getAllGroups();
-        req.setAttribute("groups", groups);
-        req.getRequestDispatcher("/WEB-INF/jsp/add_user.jsp").forward(req, resp);
-    }
+        if ("GET".equalsIgnoreCase(req.getMethod())) {
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            List<Group> groups = groupService.getAllGroups();
+            req.setAttribute("groups", groups);
 
+            req.getRequestDispatcher("/WEB-INF/jsp/add_user.jsp").forward(req, resp);
+            return;
+        }
+
+        //POST
         try {
-
             String username = req.getParameter("username");
             String password = req.getParameter("password");
 
@@ -67,13 +69,21 @@ public class AddUserServlet extends HttpServlet {
 
             userService.createUser(user, userInfo);
 
-            resp.sendRedirect(req.getContextPath() + "/disciplines");
+            resp.sendRedirect(req.getContextPath() + "/app?command=showDisciplines");
 
         } catch (IllegalArgumentException e) {
+
+            List<Group> groups = groupService.getAllGroups();
+            req.setAttribute("groups", groups);
+
             req.setAttribute("error", e.getMessage());
             req.getRequestDispatcher("/WEB-INF/jsp/add_user.jsp").forward(req, resp);
 
         } catch (Exception e) {
+
+            List<Group> groups = groupService.getAllGroups();
+            req.setAttribute("groups", groups);
+
             req.setAttribute("error", "Ошибка при создании пользователя");
             req.getRequestDispatcher("/WEB-INF/jsp/add_user.jsp").forward(req, resp);
         }

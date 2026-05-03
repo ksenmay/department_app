@@ -1,12 +1,12 @@
-package by.may.department.servlet;
+package by.may.department.command;
 
 import by.may.department.factory.ServiceFactory;
 import by.may.department.model.Discipline;
 import by.may.department.model.Group;
 import by.may.department.model.User;
 import by.may.department.service.*;
+
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -14,33 +14,48 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-public class UpdateDisciplineServlet extends HttpServlet {
+public class UpdateDisciplineCommand implements Command {
 
-    private final DisciplineService disciplineService = ServiceFactory.getInstance().getDisciplineService();
-    private final DisciplineGroupService disciplineGroupService = ServiceFactory.getInstance().getDisciplineGroupService();
-    private final DisciplineTeacherService disciplineTeacherService = ServiceFactory.getInstance().getDisciplineTeacherService();
-    private final GroupService groupService = ServiceFactory.getInstance().getGroupService();
-    private final UserService userService = ServiceFactory.getInstance().getUserService();
+    private final DisciplineService disciplineService =
+            ServiceFactory.getInstance().getDisciplineService();
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private final DisciplineGroupService disciplineGroupService =
+            ServiceFactory.getInstance().getDisciplineGroupService();
 
-        int id = Integer.parseInt(request.getParameter("id"));
-        Discipline discipline = disciplineService.getDisciplineById(id);
-        List<Group> allGroups = groupService.getAllGroups();
-        List<User> teachers = userService.getAllTeachers();
+    private final DisciplineTeacherService disciplineTeacherService =
+            ServiceFactory.getInstance().getDisciplineTeacherService();
 
-        request.setAttribute("groups", allGroups);
-        request.setAttribute("teachers", teachers);
-        request.setAttribute("discipline", discipline);
+    private final GroupService groupService =
+            ServiceFactory.getInstance().getGroupService();
 
-        request.getRequestDispatcher("/WEB-INF/jsp/update_discipline.jsp").forward(request, response);
-    }
+    private final UserService userService =
+            ServiceFactory.getInstance().getUserService();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         request.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession();
+
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            Discipline discipline = disciplineService.getDisciplineById(id);
+            List<Group> allGroups = groupService.getAllGroups();
+            List<User> teachers = userService.getAllTeachers();
+
+            request.setAttribute("groups", allGroups);
+            request.setAttribute("teachers", teachers);
+            request.setAttribute("discipline", discipline);
+
+            request.getRequestDispatcher("/WEB-INF/jsp/update_discipline.jsp")
+                    .forward(request, response);
+
+            return;
+        }
 
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
@@ -54,10 +69,13 @@ public class UpdateDisciplineServlet extends HttpServlet {
         String[] teacherIds = request.getParameterValues("teacherIds");
 
         String error = null;
+
         if (name == null || name.isBlank()) {
             error = "Название дисциплины обязательно";
         }
-        if ((groupIds == null || groupIds.length == 0) || (teacherIds == null || teacherIds.length == 0)) {
+
+        if ((groupIds == null || groupIds.length == 0)
+                || (teacherIds == null || teacherIds.length == 0)) {
             error = "Необходимо выбрать хотя бы одну группу и одного преподавателя";
         }
 
@@ -69,7 +87,10 @@ public class UpdateDisciplineServlet extends HttpServlet {
 
         if (error != null) {
             request.setAttribute("error", error);
-            request.getRequestDispatcher("/WEB-INF/jsp/update_discipline.jsp").forward(request, response);
+
+            request.getRequestDispatcher("/WEB-INF/jsp/update_discipline.jsp")
+                    .forward(request, response);
+
             return;
         }
 
@@ -82,6 +103,7 @@ public class UpdateDisciplineServlet extends HttpServlet {
                 .exam(exam)
                 .test(test)
                 .build();
+
         disciplineService.updateDiscipline(discipline);
 
         disciplineGroupService.removeAllGroupsFromDiscipline(id);
@@ -101,8 +123,10 @@ public class UpdateDisciplineServlet extends HttpServlet {
             } catch (NumberFormatException ignored) {}
         }
 
-        session.setAttribute("successMessage", "Дисциплина \"" + name + "\" успешно обновлена!");
-        response.sendRedirect(request.getContextPath() + "/disciplines");
+        session.setAttribute("successMessage",
+                "Дисциплина " + name + " успешно обновлена!");
+
+        response.sendRedirect(request.getContextPath() + "/app?command=showDisciplines");
     }
 
     private int parseOrDefault(String str, int defaultValue) {

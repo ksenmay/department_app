@@ -1,35 +1,33 @@
-package by.may.department.servlet;
+package by.may.department.command;
 
 import by.may.department.factory.ServiceFactory;
 import by.may.department.model.User;
-import by.may.department.model.UserInfo;
 import by.may.department.model.interfaces.IUserInfo;
 import by.may.department.service.AuthService;
+
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-public class LoginServlet extends HttpServlet {
+public class LoginCommand implements Command {
 
-    private AuthService authService;
-
-    @Override
-    public void init() {
-        authService = ServiceFactory.getInstance().getAuthService();
-    }
+    private final AuthService authService = ServiceFactory.getInstance().getAuthService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
-    }
+    public void execute(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+
+            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+                    .forward(request, response);
+            return;
+        }
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -38,14 +36,17 @@ public class LoginServlet extends HttpServlet {
 
         if (user == null) {
             request.setAttribute("error", "Неверный логин или пароль");
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+                    .forward(request, response);
             return;
         }
 
         IUserInfo info = user.getUserInfo();
+
         if (info == null) {
             request.setAttribute("error", "Нет данных о пользователе");
-            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+                    .forward(request, response);
             return;
         }
 
@@ -56,6 +57,6 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("role", info.getRole());
         session.setAttribute("userInfo", info);
 
-        response.sendRedirect(request.getContextPath() + "/disciplines");
+        response.sendRedirect(request.getContextPath() + "/app?command=showDisciplines");
     }
 }

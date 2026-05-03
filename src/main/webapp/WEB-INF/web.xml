@@ -8,75 +8,13 @@
   <display-name>Department App</display-name>
 
   <servlet>
-    <servlet-name>DisciplineServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.DisciplineServlet</servlet-class>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>by.may.department.servlet.DispatcherServlet</servlet-class>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>DisciplineServlet</servlet-name>
-    <url-pattern>/disciplines</url-pattern>
-  </servlet-mapping>
 
-  <servlet>
-    <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.LoginServlet</servlet-class>
-  </servlet>
   <servlet-mapping>
-    <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/login</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>LogoutServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.LogoutServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>LogoutServlet</servlet-name>
-    <url-pattern>/logout</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>AddGroupServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.AddGroupServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddGroupServlet</servlet-name>
-    <url-pattern>/add-group</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>AddUserServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.AddUserServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddUserServlet</servlet-name>
-    <url-pattern>/add-user</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>AddDisciplineServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.AddDisciplineServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddDisciplineServlet</servlet-name>
-    <url-pattern>/add-discipline</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>DeleteDisciplineServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.DeleteDisciplineServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeleteDisciplineServlet</servlet-name>
-    <url-pattern>/delete-discipline</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>UpdateDisciplineServlet</servlet-name>
-    <servlet-class>by.may.department.servlet.UpdateDisciplineServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UpdateDisciplineServlet</servlet-name>
-    <url-pattern>/update-discipline</url-pattern>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/app</url-pattern>
   </servlet-mapping>
 
 

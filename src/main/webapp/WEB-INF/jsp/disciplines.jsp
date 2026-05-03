@@ -29,24 +29,28 @@
 
     <c:if test="${sessionScope.userInfo.role.name() == 'ADMIN'}">
         <div class="actions">
-            <a href="${pageContext.request.contextPath}/add-group">
+            <a href="${pageContext.request.contextPath}/app?command=addGroup">
                 <button type="button">Добавить группу</button>
             </a>
-           <a href="${pageContext.request.contextPath}/add-user">
+           <a href="${pageContext.request.contextPath}/app?command=addUser">
                                 <button type="button">Добавить пользователя</button>
             </a>
-            <a href="${pageContext.request.contextPath}/add-discipline">
+            <a href="${pageContext.request.contextPath}/app?command=addDiscipline">
                                     <button type="button">Добавить дисциплину</button>
             </a>
         </div>
     </c:if>
 
-    <form method="get" action="${pageContext.request.contextPath}/disciplines">
+    <form method="get" action="${pageContext.request.contextPath}/app">
+
+        <input type="hidden" name="command" value="showDisciplines"/>
+
         <div class="form-item">
             <input type="checkbox" name="showAll" value="true"
                    <c:if test="${param.showAll == 'true'}">checked</c:if> />
             <span>Показать все дисциплины кафедры</span>
         </div>
+
         <button type="submit">Обновить</button>
     </form>
 
@@ -73,7 +77,7 @@
                         <td>
                             <c:choose>
                                 <c:when test="${sessionScope.userInfo.role.name() == 'ADMIN'}">
-                                    <a href="${pageContext.request.contextPath}/update-discipline?id=${row['discipline'].id}">
+                                    <a href="${pageContext.request.contextPath}/app?command=updateDiscipline&id=${row['discipline'].id}">
                                         <c:out value="${row['discipline'].name}" />
                                     </a>
                                 </c:when>
@@ -114,7 +118,7 @@
                     </td>
                     <c:if test="${sessionScope.userInfo.role.name() == 'ADMIN'}">
                         <td>
-                            <form action="${pageContext.request.contextPath}/delete-discipline" method="post" style="margin:0;">
+                            <form action="${pageContext.request.contextPath}/app?command=deleteDiscipline" method="post" style="margin:0;">
                                 <input type="hidden" name="disciplineId" value="${row['discipline'].id}" />
                                 <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить дисциплину?')">
                                     Удалить

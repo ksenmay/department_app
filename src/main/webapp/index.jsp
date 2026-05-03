@@ -25,7 +25,7 @@
         а также вести учет часов лекций, практических и лабораторных занятий.
         Доступ к функционалу ограничен в зависимости от вашей роли.
     </p>
-    <a class="button" href="${pageContext.request.contextPath}/login">Войти в систему</a>
+    <a class="button" href="${pageContext.request.contextPath}/app?command=login">Войти в систему</a>
 </div>
 </body>
 
