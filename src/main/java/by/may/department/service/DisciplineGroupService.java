@@ -22,6 +22,10 @@ public class DisciplineGroupService {
         return dao.save(dg);
     }
 
+    public boolean removeAllGroupsFromDiscipline(int disciplineId) {
+        return dao.deleteAll(disciplineId);
+    }
+
     public boolean removeDisciplineFromGroup(int disciplineId, int groupId) {
         return dao.delete(disciplineId, groupId);
     }

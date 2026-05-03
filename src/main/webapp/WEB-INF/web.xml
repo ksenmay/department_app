@@ -70,6 +70,15 @@
     <url-pattern>/delete-discipline</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>UpdateDisciplineServlet</servlet-name>
+    <servlet-class>by.may.department.servlet.UpdateDisciplineServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateDisciplineServlet</servlet-name>
+    <url-pattern>/update-discipline</url-pattern>
+  </servlet-mapping>
+
 
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>

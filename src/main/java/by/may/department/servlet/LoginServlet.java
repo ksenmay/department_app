@@ -3,6 +3,7 @@ package by.may.department.servlet;
 import by.may.department.factory.ServiceFactory;
 import by.may.department.model.User;
 import by.may.department.model.UserInfo;
+import by.may.department.model.interfaces.IUserInfo;
 import by.may.department.service.AuthService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -41,7 +42,7 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        UserInfo info = user.getUserInfo();
+        IUserInfo info = user.getUserInfo();
         if (info == null) {
             request.setAttribute("error", "Нет данных о пользователе");
             request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);

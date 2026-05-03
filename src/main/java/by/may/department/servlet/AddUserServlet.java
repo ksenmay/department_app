@@ -1,22 +1,29 @@
 package by.may.department.servlet;
 
 import by.may.department.factory.ServiceFactory;
+import by.may.department.model.Group;
 import by.may.department.model.User;
 import by.may.department.model.UserInfo;
 import by.may.department.model.enums.Role;
+import by.may.department.service.GroupService;
 import by.may.department.service.UserService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+import java.util.List;
 
 public class AddUserServlet extends HttpServlet {
 
     private final UserService userService = ServiceFactory.getInstance().getUserService();
+    private final GroupService groupService = ServiceFactory.getInstance().getGroupService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        List<Group> groups = groupService.getAllGroups();
+        req.setAttribute("groups", groups);
         req.getRequestDispatcher("/WEB-INF/jsp/add_user.jsp").forward(req, resp);
     }
 

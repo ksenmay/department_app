@@ -32,9 +32,9 @@
             <a href="${pageContext.request.contextPath}/add-group">
                 <button type="button">Добавить группу</button>
             </a>
-            <!-- <a href="${pageContext.request.contextPath}/add-user">
+           <a href="${pageContext.request.contextPath}/add-user">
                                 <button type="button">Добавить пользователя</button>
-            </a> -->
+            </a>
             <a href="${pageContext.request.contextPath}/add-discipline">
                                     <button type="button">Добавить дисциплину</button>
             </a>
@@ -70,8 +70,18 @@
             <tbody>
             <c:forEach var="row" items="${schedule}">
                 <tr>
-                    <td><c:out value="${row['discipline'].name}" /></td>
-                    <td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${sessionScope.userInfo.role.name() == 'ADMIN'}">
+                                    <a href="${pageContext.request.contextPath}/update-discipline?id=${row['discipline'].id}">
+                                        <c:out value="${row['discipline'].name}" />
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${row['discipline'].name}" />
+                                </c:otherwise>
+                            </c:choose>
+                        </td>                    <td>
                         <c:choose>
                             <c:when test="${not empty row['teacher']}">
                                 <c:out value="${row['teacher'].surname} ${row['teacher'].name} ${row['teacher'].patronymic}" />

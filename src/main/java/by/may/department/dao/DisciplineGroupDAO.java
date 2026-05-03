@@ -40,6 +40,21 @@ public class DisciplineGroupDAO {
         }
     }
 
+    public boolean deleteAll(int disciplineId) {
+        String sql = "DELETE FROM discipline_vs_groups WHERE discipline_id = ?";
+
+        try (var conn = ConnectionPool.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, disciplineId);
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось удалить связи дисциплины с группами", e);
+        }
+    }
+
     public DisciplineGroup find(int disciplineId, int groupId) {
         String sql = "SELECT discipline_id, group_id FROM discipline_vs_groups WHERE discipline_id = ? AND group_id = ?";
         try (var conn = ConnectionPool.getInstance().getConnection();

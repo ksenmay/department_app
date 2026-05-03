@@ -5,7 +5,6 @@ import by.may.department.model.Discipline;
 import by.may.department.model.Group;
 import by.may.department.model.User;
 import by.may.department.service.*;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-public class AddDisciplineServlet extends HttpServlet {
+public class UpdateDisciplineServlet extends HttpServlet {
 
     private final DisciplineService disciplineService = ServiceFactory.getInstance().getDisciplineService();
     private final DisciplineGroupService disciplineGroupService = ServiceFactory.getInstance().getDisciplineGroupService();
@@ -26,13 +25,16 @@ public class AddDisciplineServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        int id = Integer.parseInt(request.getParameter("id"));
+        Discipline discipline = disciplineService.getDisciplineById(id);
         List<Group> allGroups = groupService.getAllGroups();
         List<User> teachers = userService.getAllTeachers();
 
         request.setAttribute("groups", allGroups);
         request.setAttribute("teachers", teachers);
+        request.setAttribute("discipline", discipline);
 
-        request.getRequestDispatcher("/WEB-INF/jsp/add_discipline.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/jsp/update_discipline.jsp").forward(request, response);
     }
 
     @Override
@@ -40,6 +42,7 @@ public class AddDisciplineServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
 
+        int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String lectureStr = request.getParameter("lectureHours");
         String practicalStr = request.getParameter("practicalHours");
@@ -66,11 +69,12 @@ public class AddDisciplineServlet extends HttpServlet {
 
         if (error != null) {
             request.setAttribute("error", error);
-            request.getRequestDispatcher("/WEB-INF/jsp/add_discipline.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/jsp/update_discipline.jsp").forward(request, response);
             return;
         }
 
         Discipline discipline = Discipline.builder()
+                .id(id)
                 .name(name)
                 .lectureHours(lecture)
                 .practicalHours(practical)
@@ -78,7 +82,10 @@ public class AddDisciplineServlet extends HttpServlet {
                 .exam(exam)
                 .test(test)
                 .build();
-        disciplineService.createDiscipline(discipline);
+        disciplineService.updateDiscipline(discipline);
+
+        disciplineGroupService.removeAllGroupsFromDiscipline(id);
+        disciplineTeacherService.removeAllTeachersFromDiscipline(id);
 
         for (String gId : groupIds) {
             try {
@@ -94,7 +101,7 @@ public class AddDisciplineServlet extends HttpServlet {
             } catch (NumberFormatException ignored) {}
         }
 
-        session.setAttribute("successMessage", "Дисциплина \"" + name + "\" успешно добавлена!");
+        session.setAttribute("successMessage", "Дисциплина \"" + name + "\" успешно обновлена!");
         response.sendRedirect(request.getContextPath() + "/disciplines");
     }
 

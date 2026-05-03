@@ -21,7 +21,6 @@ public class UserService {
     }
 
     public void createUser(User user, UserInfo userInfo) {
-
         if (userDAO.findByUsername(user.getUsername()) != null) {
             throw new IllegalArgumentException("Пользователь с таким именем уже существует");
         }
@@ -36,37 +35,34 @@ public class UserService {
     }
 
     public User getUserById(int id) {
-        User user = userDAO.findById(id);
-        if (user != null) {
-            user.setUserInfo(userInfoDAO.findByUserId(id));
-        }
-        return user;
+        return userDAO.findById(id);
     }
 
-    public java.util.List<User> getAllUsers() {
-        java.util.List<User> users = userDAO.findAll();
-        for (User user : users) {
-            user.setUserInfo(userInfoDAO.findByUserId(user.getId()));
-        }
-        return users;
+    public List<User> getAllUsers() {
+        return userDAO.findAll();
     }
 
     public List<User> getAllTeachers() {
-        List<User> allUsers = getAllUsers();
+        List<User> users = userDAO.findAll();
         List<User> teachers = new ArrayList<>();
-        for (User user : allUsers) {
-            if (user.getUserInfo() != null && user.getUserInfo().getRole() == Role.TEACHER) {
+
+        for (User user : users) {
+            if (user.getUserInfo().getRole() == Role.TEACHER) {
                 teachers.add(user);
             }
         }
+
         return teachers;
     }
-
 
     public void updateUser(User user) {
         try {
             userDAO.update(user);
-            userInfoDAO.update(user.getUserInfo());
+
+            if (user.getUserInfo() instanceof UserInfo) {
+                userInfoDAO.update((UserInfo) user.getUserInfo());
+            }
+
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при обновлении пользователя", e);
         }

@@ -49,19 +49,18 @@
         <div class="form-item">
             <label>Роль</label>
             <select name="role" id="roleSelect" required>
-                <option value="admin">ADMIN</option>
-                <option value="teacher">TEACHER</option>
-                <option value="student">STUDENT</option>
+                <option value="admin">Администратор</option>
+                <option value="teacher">Преподаватель</option>
+                <option value="student">Студент</option>
             </select>
         </div>
 
-        <!-- ГРУППА (скрыта по умолчанию) -->
         <div class="form-item" id="groupBlock" style="display: none;">
             <label>Группа</label>
             <select name="groupId">
-                <option value="">-- выберите группу --</option>
+                <option value="">выберите группу</option>
                 <c:forEach var="group" items="${groups}">
-                    <option value="${group.id}">
+                    <option value="${group.groupId}">
                         <c:out value="${group.groupNumber}" />
                     </option>
                 </c:forEach>
@@ -77,7 +76,6 @@
 
 </div>
 
-<!-- JS для показа группы -->
 <script>
     const roleSelect = document.getElementById("roleSelect");
     const groupBlock = document.getElementById("groupBlock");
@@ -92,7 +90,6 @@
 
     roleSelect.addEventListener("change", toggleGroup);
 
-    // при загрузке (если вдруг форма вернулась с ошибкой)
     toggleGroup();
 </script>
 

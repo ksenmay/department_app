@@ -26,6 +26,10 @@ public class DisciplineTeacherService {
         return dao.delete(disciplineId, teacherId);
     }
 
+    public boolean removeAllTeachersFromDiscipline(int disciplineId) {
+        return dao.deleteAll(disciplineId);
+    }
+
     public List<DisciplineTeacher> getTeachersByDiscipline(int disciplineId) {
         return dao.findByDisciplineId(disciplineId);
     }

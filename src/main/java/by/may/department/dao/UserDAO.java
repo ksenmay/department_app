@@ -2,6 +2,7 @@ package by.may.department.dao;
 
 import by.may.department.connection.ConnectionPool;
 import by.may.department.model.User;
+import by.may.department.model.proxy.UserInfoProxy;
 
 import java.sql.*;
 
@@ -56,6 +57,7 @@ public class UserDAO extends AbstractDAO<User, Integer> {
                 .id(rs.getInt("id"))
                 .username(rs.getString("username"))
                 .password(rs.getString("password"))
+                .userInfo(new UserInfoProxy(rs.getInt("id")))
                 .build();
     }
 

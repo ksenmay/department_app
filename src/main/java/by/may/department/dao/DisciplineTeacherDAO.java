@@ -26,6 +26,21 @@ public class DisciplineTeacherDAO {
         return entity;
     }
 
+    public boolean deleteAll(int disciplineId) {
+        String sql = "DELETE FROM disciplines_vs_teachers WHERE discipline_id = ?";
+
+        try (var conn = ConnectionPool.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, disciplineId);
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось удалить связи дисциплины с преподавателями", e);
+        }
+    }
+
     public boolean delete(int disciplineId, int teacherId) {
         String sql = "DELETE FROM disciplines_vs_teachers WHERE discipline_id = ? AND teacher_id = ?";
         try (var conn = ConnectionPool.getInstance().getConnection();
