@@ -7,9 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DisciplineTeacherDAO {
+
+    private final Map<String, DisciplineTeacher> identityMap = new HashMap<>();
 
     public DisciplineTeacher save(DisciplineTeacher entity) {
         String sql = "INSERT INTO disciplines_vs_teachers (discipline_id, teacher_id) VALUES (?, ?)";
@@ -19,6 +23,9 @@ public class DisciplineTeacherDAO {
             ps.setInt(1, entity.getDisciplineId());
             ps.setInt(2, entity.getTeacherId());
             ps.executeUpdate();
+
+            String key = generateKey(entity.getDisciplineId(), entity.getTeacherId());
+            identityMap.put(key, entity);
 
         } catch (SQLException e) {
             throw new RuntimeException("Не удалось сохранить связь дисциплина-преподаватель", e);
@@ -34,6 +41,15 @@ public class DisciplineTeacherDAO {
 
             ps.setInt(1, disciplineId);
             ps.executeUpdate();
+
+            List<String> keysToRemove = new ArrayList<>();
+            for (String key : identityMap.keySet()) {
+                if (key.startsWith(disciplineId + "_")) {
+                    keysToRemove.add(key);
+                }
+            }
+            keysToRemove.forEach(identityMap::remove);
+
             return true;
 
         } catch (SQLException e) {
@@ -48,7 +64,12 @@ public class DisciplineTeacherDAO {
 
             ps.setInt(1, disciplineId);
             ps.setInt(2, teacherId);
-            return ps.executeUpdate() > 0;
+            boolean deleted = ps.executeUpdate() > 0;
+
+            if (deleted) {
+                identityMap.remove(generateKey(disciplineId, teacherId));
+            }
+            return deleted;
 
         } catch (SQLException e) {
             throw new RuntimeException("Не удалось удалить связь дисциплина-преподаватель", e);
@@ -56,6 +77,12 @@ public class DisciplineTeacherDAO {
     }
 
     public DisciplineTeacher find(int disciplineId, int teacherId) {
+        String key = generateKey(disciplineId, teacherId);
+
+        if (identityMap.containsKey(key)) {
+            return identityMap.get(key);
+        }
+
         String sql = "SELECT discipline_id, teacher_id FROM disciplines_vs_teachers WHERE discipline_id = ? AND teacher_id = ?";
         try (var conn = ConnectionPool.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -65,7 +92,9 @@ public class DisciplineTeacherDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return mapRow(rs);
+                    DisciplineTeacher entity = mapRow(rs);
+                    identityMap.put(key, entity);
+                    return entity;
                 }
             }
 
@@ -83,7 +112,7 @@ public class DisciplineTeacherDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(mapRow(rs));
+                list.add(getOrCacheFromRs(rs));
             }
 
         } catch (SQLException e) {
@@ -101,7 +130,7 @@ public class DisciplineTeacherDAO {
             ps.setInt(1, disciplineId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapRow(rs));
+                    list.add(getOrCacheFromRs(rs));
                 }
             }
 
@@ -120,7 +149,7 @@ public class DisciplineTeacherDAO {
             ps.setInt(1, teacherId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapRow(rs));
+                    list.add(getOrCacheFromRs(rs));
                 }
             }
 
@@ -130,10 +159,28 @@ public class DisciplineTeacherDAO {
         return list;
     }
 
+    private DisciplineTeacher getOrCacheFromRs(ResultSet rs) throws SQLException {
+        int dId = rs.getInt("discipline_id");
+        int tId = rs.getInt("teacher_id");
+        String key = generateKey(dId, tId);
+
+        if (identityMap.containsKey(key)) {
+            return identityMap.get(key);
+        }
+
+        DisciplineTeacher entity = mapRow(rs);
+        identityMap.put(key, entity);
+        return entity;
+    }
+
     private DisciplineTeacher mapRow(ResultSet rs) throws SQLException {
         return DisciplineTeacher.builder()
                 .disciplineId(rs.getInt("discipline_id"))
                 .teacherId(rs.getInt("teacher_id"))
                 .build();
+    }
+
+    private String generateKey(int disciplineId, int teacherId) {
+        return disciplineId + "_" + teacherId;
     }
 }

@@ -7,8 +7,28 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GroupDAO extends AbstractDAO<Group, Integer> {
+
+    private final Map<Integer, Group> identityMap = new HashMap<>();
+
+    @Override
+    public Group findById(Integer id) {
+        if (identityMap.containsKey(id)) {
+            return identityMap.get(id);
+        }
+
+        Group group = super.findById(id);
+
+        if (group != null) {
+            identityMap.put(id, group);
+        }
+
+        return group;
+    }
+
 
     @Override
     protected String getInsertQuery() {
@@ -55,21 +75,21 @@ public class GroupDAO extends AbstractDAO<Group, Integer> {
         return "DELETE FROM student_groups WHERE id = ?";
     }
 
-    public Group findById(int id) {
-        String sql = "SELECT id, group_number, quantity_of_students FROM student_groups WHERE id = ?";
-        try (Connection c = ConnectionPool.getInstance().getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Не удалось получить группу по id", e);
-        }
-        return null;
-    }
+//    public Group findById(int id) {
+//        String sql = "SELECT id, group_number, quantity_of_students FROM student_groups WHERE id = ?";
+//        try (Connection c = ConnectionPool.getInstance().getConnection();
+//             PreparedStatement ps = c.prepareStatement(sql)) {
+//            ps.setInt(1, id);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                if (rs.next()) {
+//                    return mapRow(rs);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Не удалось получить группу по id", e);
+//        }
+//        return null;
+//    }
 
     @Override
     protected Group mapRow(ResultSet rs) throws SQLException {

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class DAOFactory {
 
-    private static final DAOFactory INSTANCE = new DAOFactory();
+    //private static final DAOFactory INSTANCE = new DAOFactory();
 
     private final DisciplineDAO disciplineDAO = new DisciplineDAO();
     private final DisciplineGroupDAO disciplineGroupDAO = new DisciplineGroupDAO();
@@ -15,9 +15,9 @@ public class DAOFactory {
     private final UserInfoDAO userInfoDAO = new UserInfoDAO();
     private final UserDAO userDAO = new UserDAO();
 
-    private DAOFactory() {}
+    public DAOFactory() {}
 
-    public static DAOFactory getInstance() {
-        return INSTANCE;
-    }
+//    public static DAOFactory getInstance() {
+//        return INSTANCE;
+//    }
 }

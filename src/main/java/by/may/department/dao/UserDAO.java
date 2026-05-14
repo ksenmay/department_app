@@ -5,8 +5,53 @@ import by.may.department.model.User;
 import by.may.department.model.proxy.UserInfoProxy;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserDAO extends AbstractDAO<User, Integer> {
+
+    private final Map<Integer, User> identityMap = new HashMap<>();
+
+    @Override
+    public User findById(Integer id) {
+        if (identityMap.containsKey(id)) {
+            return identityMap.get(id);
+        }
+
+        User user = super.findById(id);
+
+        if (user != null) {
+            identityMap.put(id, user);
+        }
+
+        return user;
+    }
+
+    public User findByUsername(String username) {
+
+        String sql = "SELECT id, username, password FROM users WHERE username=?";
+        try (Connection c = ConnectionPool.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = mapRow(rs);
+
+                    if (identityMap.containsKey(user.getId())) {
+                        return identityMap.get(user.getId());
+                    }
+                    identityMap.put(user.getId(), user);
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось получить пользователя по username", e);
+        }
+
+        return null;
+    }
 
     @Override
     protected String getInsertQuery() {
@@ -59,21 +104,5 @@ public class UserDAO extends AbstractDAO<User, Integer> {
                 .password(rs.getString("password"))
                 .userInfo(new UserInfoProxy(rs.getInt("id")))
                 .build();
-    }
-
-    public User findByUsername(String username) {
-        String sql = "SELECT id, username, password FROM users WHERE username=?";
-        try (Connection c = ConnectionPool.getInstance().getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Не удалось получить пользователя по username", e);
-        }
-        return null;
     }
 }

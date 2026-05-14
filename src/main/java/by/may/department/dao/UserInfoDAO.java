@@ -5,8 +5,53 @@ import by.may.department.model.UserInfo;
 import by.may.department.model.enums.Role;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserInfoDAO extends AbstractDAO<UserInfo, Integer> {
+
+    private final Map<Integer, UserInfo> identityMap = new HashMap<>();
+
+    @Override
+    public UserInfo findById(Integer id) {
+        if (identityMap.containsKey(id)) {
+            return identityMap.get(id);
+        }
+
+        UserInfo userInfo = super.findById(id);
+
+        if (userInfo != null) {
+            identityMap.put(id, userInfo);
+        }
+
+        return userInfo;
+    }
+
+    public UserInfo findByUserId(int userId) {
+        if (identityMap.containsKey(userId)) {
+            return identityMap.get(userId);
+        }
+
+        String sql = "SELECT * FROM user_info WHERE user_id=?";
+        try (Connection c = ConnectionPool.getInstance().getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    UserInfo userInfo = mapRow(rs);
+
+                    identityMap.put(userId, userInfo);
+                    return userInfo;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось получить UserInfo", e);
+        }
+
+        return null;
+    }
 
     @Override
     protected String getInsertQuery() {
@@ -74,19 +119,4 @@ public class UserInfoDAO extends AbstractDAO<UserInfo, Integer> {
                 .build();
     }
 
-    public UserInfo findByUserId(int userId) {
-        String sql = "SELECT * FROM user_info WHERE user_id=?";
-        try (Connection c = ConnectionPool.getInstance().getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Не удалось получить UserInfo", e);
-        }
-        return null;
-    }
 }

@@ -15,7 +15,7 @@ public class UserInfoProxy implements IUserInfo {
 
     public UserInfoProxy(int userId) {
         this.userId = userId;
-        this.userInfoDAO = DAOFactory.getInstance().getUserInfoDAO();
+        this.userInfoDAO = new DAOFactory();
     }
 
     private UserInfo getReal() {

@@ -7,9 +7,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DisciplineGroupDAO {
+
+    private final Map<String, DisciplineGroup> identityMap = new HashMap<>();
+
+    private String makeKey(int disciplineId, int groupId) {
+        return disciplineId + "_" + groupId;
+    }
 
     public DisciplineGroup save(DisciplineGroup entity) {
         String sql = "INSERT INTO discipline_vs_groups (discipline_id, group_id) VALUES (?, ?)";
@@ -19,6 +27,9 @@ public class DisciplineGroupDAO {
             ps.setInt(1, entity.getDisciplineId());
             ps.setInt(2, entity.getGroupId());
             ps.executeUpdate();
+
+            String key = makeKey(entity.getDisciplineId(), entity.getGroupId());
+            identityMap.put(key, entity);
 
         } catch (SQLException e) {
             throw new RuntimeException("Не удалось сохранить связь дисциплина-группа", e);
@@ -33,7 +44,12 @@ public class DisciplineGroupDAO {
 
             ps.setInt(1, disciplineId);
             ps.setInt(2, groupId);
-            return ps.executeUpdate() > 0;
+            boolean deleted = ps.executeUpdate() > 0;
+
+            if (deleted) {
+                identityMap.remove(makeKey(disciplineId, groupId));
+            }
+            return deleted;
 
         } catch (SQLException e) {
             throw new RuntimeException("Не удалось удалить связь дисциплина-группа", e);
@@ -48,6 +64,9 @@ public class DisciplineGroupDAO {
 
             ps.setInt(1, disciplineId);
             ps.executeUpdate();
+
+            identityMap.entrySet().removeIf(entry -> entry.getKey().startsWith(disciplineId + "_"));
+
             return true;
 
         } catch (SQLException e) {
@@ -56,6 +75,12 @@ public class DisciplineGroupDAO {
     }
 
     public DisciplineGroup find(int disciplineId, int groupId) {
+        String key = makeKey(disciplineId, groupId);
+
+        if (identityMap.containsKey(key)) {
+            return identityMap.get(key);
+        }
+
         String sql = "SELECT discipline_id, group_id FROM discipline_vs_groups WHERE discipline_id = ? AND group_id = ?";
         try (var conn = ConnectionPool.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -65,7 +90,9 @@ public class DisciplineGroupDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return mapRow(rs);
+                    DisciplineGroup entity = mapRow(rs);
+                    identityMap.put(key, entity);
+                    return entity;
                 }
             }
 
@@ -83,7 +110,11 @@ public class DisciplineGroupDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(mapRow(rs));
+
+                int dId = rs.getInt("discipline_id");
+                int gId = rs.getInt("group_id");
+
+                list.add(find(dId, gId));
             }
 
         } catch (SQLException e) {
@@ -101,7 +132,8 @@ public class DisciplineGroupDAO {
             ps.setInt(1, disciplineId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapRow(rs));
+                    int gId = rs.getInt("group_id");
+                    list.add(find(disciplineId, gId));
                 }
             }
 
@@ -120,7 +152,8 @@ public class DisciplineGroupDAO {
             ps.setInt(1, groupId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapRow(rs));
+                    int dId = rs.getInt("discipline_id");
+                    list.add(find(dId, groupId));
                 }
             }
 
