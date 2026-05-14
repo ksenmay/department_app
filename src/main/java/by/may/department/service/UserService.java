@@ -16,8 +16,9 @@ public class UserService {
     private final UserInfoDAO userInfoDAO;
 
     public UserService() {
-        this.userDAO = DAOFactory.getInstance().getUserDAO();
-        this.userInfoDAO = DAOFactory.getInstance().getUserInfoDAO();
+        DAOFactory daoFactory = new DAOFactory();
+        this.userDAO = daoFactory.getUserDAO();
+        this.userInfoDAO = daoFactory.getUserInfoDAO();
     }
 
     public void createUser(User user, UserInfo userInfo) {

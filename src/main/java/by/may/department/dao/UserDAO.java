@@ -11,6 +11,11 @@ import java.util.Map;
 public class UserDAO extends AbstractDAO<User, Integer> {
 
     private final Map<Integer, User> identityMap = new HashMap<>();
+    private final UserInfoDAO userInfoDAO;
+
+    public UserDAO(UserInfoDAO userInfoDAO) {
+        this.userInfoDAO = userInfoDAO;
+    }
 
     @Override
     public User findById(Integer id) {
@@ -102,7 +107,7 @@ public class UserDAO extends AbstractDAO<User, Integer> {
                 .id(rs.getInt("id"))
                 .username(rs.getString("username"))
                 .password(rs.getString("password"))
-                .userInfo(new UserInfoProxy(rs.getInt("id")))
+                .userInfo(new UserInfoProxy(rs.getInt("id"), this.userInfoDAO))
                 .build();
     }
 }

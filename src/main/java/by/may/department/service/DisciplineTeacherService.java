@@ -11,7 +11,8 @@ public class DisciplineTeacherService {
     private final DisciplineTeacherDAO dao;
 
     public DisciplineTeacherService() {
-        this.dao = DAOFactory.getInstance().getDisciplineTeacherDAO();
+        DAOFactory daoFactory = new DAOFactory();
+        this.dao = daoFactory.getDisciplineTeacherDAO();
     }
 
     public DisciplineTeacher assignTeacherToDiscipline(int disciplineId, int teacherId) {

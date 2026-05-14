@@ -11,7 +11,8 @@ public class GroupService {
     private final GroupDAO groupDAO;
 
     public GroupService() {
-        this.groupDAO = DAOFactory.getInstance().getGroupDAO();
+        DAOFactory daoFactory = new DAOFactory();
+        this.groupDAO = daoFactory.getGroupDAO();
     }
 
     public List<Group> getAllGroups() {

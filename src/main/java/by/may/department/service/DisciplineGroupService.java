@@ -11,9 +11,9 @@ public class DisciplineGroupService {
     private final DisciplineGroupDAO dao;
 
     public DisciplineGroupService() {
-        this.dao = DAOFactory.getInstance().getDisciplineGroupDAO();
+        DAOFactory factory = new DAOFactory();
+        this.dao = factory.getDisciplineGroupDAO();
     }
-
     public DisciplineGroup assignDisciplineToGroup(int disciplineId, int groupId) {
         DisciplineGroup dg = DisciplineGroup.builder()
                 .disciplineId(disciplineId)

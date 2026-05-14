@@ -24,9 +24,9 @@ public class TimetableService {
         this.dgService = dgService;
         this.dtService = dtService;
         this.disciplineService = disciplineService;
-
-        this.groupDAO = DAOFactory.getInstance().getGroupDAO();
-        this.userDAO = DAOFactory.getInstance().getUserDAO();
+        DAOFactory daoFactory = new DAOFactory();
+        this.groupDAO = daoFactory.getGroupDAO();
+        this.userDAO = daoFactory.getUserDAO();
     }
 
     public List<Map<String, Object>> getScheduleForUser(User user) {

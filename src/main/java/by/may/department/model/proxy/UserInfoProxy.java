@@ -11,11 +11,13 @@ public class UserInfoProxy implements IUserInfo {
     private int userId;
 
     private UserInfo realUserInfo;
-    private UserInfoDAO userInfoDAO;
+    private UserInfo userInfo;
+    private final UserInfoDAO userInfoDAO;
 
-    public UserInfoProxy(int userId) {
+
+    public UserInfoProxy(int userId, UserInfoDAO userInfoDAO) {
         this.userId = userId;
-        this.userInfoDAO = new DAOFactory();
+        this.userInfoDAO = userInfoDAO;
     }
 
     private UserInfo getReal() {
@@ -24,6 +26,7 @@ public class UserInfoProxy implements IUserInfo {
         }
         return realUserInfo;
     }
+
 
     @Override
     public int getUserId() {

@@ -16,7 +16,8 @@ public class DisciplineService {
 
 
     public DisciplineService(DisciplineGroupService disciplineGroupService, DisciplineTeacherService disciplineTeacherService) {
-        this.disciplineDAO = DAOFactory.getInstance().getDisciplineDAO();
+        DAOFactory daoFactory = new DAOFactory();
+        this.disciplineDAO = daoFactory.getDisciplineDAO();
         this.disciplineGroupService = disciplineGroupService;
         this.disciplineTeacherService = disciplineTeacherService;
     }
